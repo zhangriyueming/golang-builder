@@ -37,8 +37,8 @@ if [[ "$COMPRESS_BINARY" == "true" ]];
 then
   if [[ ! -z "${OUTPUT}" ]];
   then
-    goupx ${OUTPUT}
+    upx ${OUTPUT}
   else
-    goupx $name
+    upx $name
   fi
 fi

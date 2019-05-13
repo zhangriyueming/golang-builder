@@ -72,9 +72,9 @@ else
   then
     if [[ ! -z "${outputFile}" ]];
     then
-      goupx "${outputFile}"
+      upx "${outputFile}"
     else
-      goupx $name
+      upx $name
     fi
   fi
 fi
