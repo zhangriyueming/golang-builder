@@ -11,7 +11,8 @@ fi
 # Construct Go package path
 if [ ! -z "${MAIN_PATH}" ]; 
 then
-  pkgName="$(go list -e -f '{{.ImportComment}}' ./... 2>/dev/null | grep ${MAIN_PATH} || true)"
+  echo "MAIN_PATH: ${MAIN_PATH}"
+  pkgName="$(cd ${MAIN_PATH} && go list -e -f '{{.ImportComment}}' ./... 2>/dev/null || true)"
   path=$(cd /src && ls -d -1 ${MAIN_PATH})
   pkgBase=${pkgName%/$path}
 else
@@ -37,6 +38,12 @@ mkdir -p "$(dirname "$pkgPath")"
 
 # Link source dir into GOPATH
 ln -sf /src "$pkgPath"
+# if [ ! -z "${MAIN_PATH}" ]; 
+# then
+#   ln -sf "/src/${MAIN_PATH}" "$pkgPath"
+# else
+#   ln -sf /src "$pkgPath"
+# fi
 
 if [ -e "$pkgPath/vendor" ];
 then
@@ -48,5 +55,10 @@ then
   GOPATH=$pkgPath/Godeps/_workspace:$GOPATH
 else
   # Get all package dependencies
-  go get -t -d -v ./...
+  if [ ! -z "${BUILD_GOOS}" ];
+  then
+    `GOOS=${BUILD_GOOS:-""} GOARCH=${BUILD_GOARCH:-""} go get -t -d -v ./...`
+  else
+    go get -t -d -v ./...
+  fi
 fi

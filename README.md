@@ -1,5 +1,5 @@
 # golang-builder
-[![](https://badge.imagelayers.io/centurylink/golang-builder.svg)](https://imagelayers.io/?images=centurylink/golang-builder:latest 'Get your own badge on imagelayers.io')
+[![](https://images.microbadger.com/badges/image/zhangriyueming/golang-builder.svg)](https://microbadger.com/images/zhangriyueming/golang-builder "Get your own image badge on microbadger.com")
 
 Containerized build environment for compiling an executable Golang package and packaging
 it in a light-weight Docker container.
@@ -113,7 +113,7 @@ Assuming that the source code for your Go executable package is located at
     docker run --rm \
       -v "$(pwd):/src" \
       -v /var/run/docker.sock:/var/run/docker.sock \
-      centurylink/golang-builder
+      zhangriyueming/golang-builder
 
 This would result in the creation of a new Docker image named `hello:latest`.
 
@@ -122,12 +122,12 @@ Note that the image tag is generated dynamically from the name of the Go package
     docker run --rm \
       -v "$(pwd):/src" \
       -v /var/run/docker.sock:/var/run/docker.sock \
-      centurylink/golang-builder \
+      zhangriyueming/golang-builder \
       centurylink/hello:1.0
 
 If you just want to compile your application without packaging it in a Docker image you can simply run *golang-builder* without mounting the Docker socket.
 
-    docker run --rm -v $(pwd):/src centurylink/golang-builder
+    docker run --rm -v $(pwd):/src zhangriyueming/golang-builder
 
 ### Additional Options
 
@@ -146,11 +146,11 @@ The above are environment variables to be passed to the docker run command:
       -e COMPRESS_BINARY=true \
       -e OUTPUT=/bin/my_go_binary \
       -v $(pwd):/src \
-      centurylink/golang-builder
+      zhangriyueming/golang-builder
 
 ### Cross-compilation
 
-An additional image, `centurylink/golang-builder-cross`, exists that works identically to `golang-builder` save for the presence of the additional options presented above. This uses a larger base image that will build linux and OSX binaries for 32- and 64-bit, named like `mypackage-darwin-amd64`. This will use CGO, and you may find that some code – for example things from the `os` package – do not behave the same under cross-compilation in a container as they do natively compiled in OSX.
+An additional image, `zhangriyueming/golang-builder:cross-platform`, exists that works identically to `golang-builder` save for the presence of the additional options presented above. This uses a larger base image that will build linux and OSX binaries for 32- and 64-bit, named like `mypackage-darwin-amd64`. This will use CGO, and you may find that some code – for example things from the `os` package – do not behave the same under cross-compilation in a container as they do natively compiled in OSX.
 
 By default it will build Linux and OSX binaries for 32- and 64-bit but you can override this with environment variables.
 
@@ -158,7 +158,7 @@ docker run --rm \
   -e BUILD_GOOS="linux" \
   -e BUILD_GOARCH="arm amd64" \
   -v $(pwd):/src \
-  centurylink/golang-builder-cross
+  zhangriyueming/golang-builder:cross-platform
 
 This command will build Linux binaries for amd64 and arm.
 

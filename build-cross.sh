@@ -16,9 +16,11 @@ for goos in $BUILD_GOOS; do
                 # either export them or do this. My theory is that it's somehow
                 # building in another process that doesn't have access to the
                 # loop variables. That caused everything to be built for linux.
-                `GOOS=$goos GOARCH=$goarch go build \
-                        -v \
+                `GOOS=$goos GOARCH=$goarch CGO_ENABLED=${CGO_ENABLED:-0} go build \
+                        -a \
                         -o $name-$goos-$goarch \
+                        --installsuffix cgo \
+                        --ldflags="${LDFLAGS:--s}" \
                         $pkgName`
                 rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
         done
