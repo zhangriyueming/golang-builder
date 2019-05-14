@@ -12,7 +12,8 @@ fi
 if [ ! -z "${MAIN_PATH}" ]; 
 then
   echo "MAIN_PATH: ${MAIN_PATH}"
-  pkgName="$(cd ${MAIN_PATH} && go list -e -f '{{.ImportComment}}' ./... 2>/dev/null || true)"
+  # pkgName="$(cd ${MAIN_PATH} && go list -e -f '{{.ImportComment}}' ./... 2>/dev/null || true)"
+  pkgName="$(go list -e -f '{{.ImportComment}}' ./... 2>/dev/null | grep ${MAIN_PATH} || true)"
   path=$(cd /src && ls -d -1 ${MAIN_PATH})
   pkgBase=${pkgName%/$path}
 else
@@ -38,12 +39,8 @@ mkdir -p "$(dirname "$pkgPath")"
 
 # Link source dir into GOPATH
 ln -sf /src "$pkgPath"
-# if [ ! -z "${MAIN_PATH}" ]; 
-# then
-#   ln -sf "/src/${MAIN_PATH}" "$pkgPath"
-# else
-#   ln -sf /src "$pkgPath"
-# fi
+
+cd "$pkgPath/$MAIN_PATH"
 
 if [ -e "$pkgPath/vendor" ];
 then

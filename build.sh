@@ -26,11 +26,6 @@ then
 fi
 output="-o ${outputFile}"
 
-if [ ! -z "${MAIN_PATH}" ]; 
-then
-  cd ${MAIN_PATH}
-fi
-
 # Compile statically linked version of package
 echo "Building $pkgName => ${outputFile}"
 if [ ! -z "${BUILD_GOOS}" ];
@@ -46,10 +41,11 @@ then
       # building in another process that doesn't have access to the
       # loop variables. That caused everything to be built for linux.
       (
-        GOOS=$goos GOARCH=$goarch CGO_ENABLED=${CGO_ENABLED:-0} go build \
+        GOOS=$goos GOARCH=$goarch CGO_ENABLED=${CGO_ENABLED:-1} go build \
               -a \
               `echo ${output}-$goos-$goarch` \
               --installsuffix cgo \
+              `echo $1` \
               --ldflags="${LDFLAGS:--s}"
         #      $pkgName
         # Or just simplely delete $pkgName line
@@ -59,11 +55,12 @@ then
   done
 else
   (
-    CGO_ENABLED=${CGO_ENABLED:-0} \
+    CGO_ENABLED=${CGO_ENABLED:-1} \
     go build \
     -a \
     ${output} \
     --installsuffix cgo \
+    `echo $1` \
     --ldflags="${LDFLAGS:--s}"
     # $pkgName
     # Or just simplely delete $pkgName line
