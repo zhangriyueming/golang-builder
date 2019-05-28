@@ -43,6 +43,7 @@ then
       (
         GOOS=$goos GOARCH=$goarch CGO_ENABLED=${CGO_ENABLED:-1} go build \
               -a \
+              `echo ${modFlag}` \
               `echo ${output}-$goos-$goarch` \
               --installsuffix cgo \
               `echo $1` \
@@ -58,6 +59,7 @@ else
     CGO_ENABLED=${CGO_ENABLED:-1} \
     go build \
     -a \
+    `echo ${modFlag}` \
     ${output} \
     --installsuffix cgo \
     `echo $1` \

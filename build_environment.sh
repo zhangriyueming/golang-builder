@@ -9,16 +9,33 @@ then
 fi
 
 # Construct Go package path
-if [ ! -z "${MAIN_PATH}" ]; 
+modFlag=""
+if [ -e "/src/go.mod" ];
 then
-  echo "MAIN_PATH: ${MAIN_PATH}"
-  # pkgName="$(cd ${MAIN_PATH} && go list -e -f '{{.ImportComment}}' ./... 2>/dev/null || true)"
-  pkgName="$(go list -e -f '{{.ImportComment}}' ./... 2>/dev/null | grep ${MAIN_PATH} || true)"
-  path=$(cd /src && ls -d -1 ${MAIN_PATH})
-  pkgBase=${pkgName%/$path}
+  if [ ! -z "${MAIN_PATH}" ]; 
+  then
+    echo "go.mod found, MAIN_PATH: ${MAIN_PATH}"
+    export GO111MODULE=on
+    modFlag="-mod=vendor"
+    pkgBase="$(go list -mod=vendor 2>/dev/null || true)"
+    path=$(cd /src && ls -d -1 ${MAIN_PATH})
+    pkgName="$pkgBase/${MAIN_PATH}"
+  else
+    pkgName="$(go list -e -f '{{.ImportComment}}' 2>/dev/null || true)"
+    pkgBase="$pkgName"
+  fi
 else
-  pkgName="$(go list -e -f '{{.ImportComment}}' 2>/dev/null || true)"
-  pkgBase="$pkgName"
+  if [ ! -z "${MAIN_PATH}" ]; 
+  then
+    echo "MAIN_PATH: ${MAIN_PATH}"
+    # pkgName="$(cd ${MAIN_PATH} && go list -e -f '{{.ImportComment}}' ./... 2>/dev/null || true)"
+    pkgName="$(go list -e -f '{{.ImportComment}}' ./... 2>/dev/null | grep ${MAIN_PATH} || true)"
+    path=$(cd /src && ls -d -1 ${MAIN_PATH})
+    pkgBase=${pkgName%/$path}
+  else
+    pkgName="$(go list -e -f '{{.ImportComment}}' 2>/dev/null || true)"
+    pkgBase="$pkgName"
+  fi
 fi
 
 echo "using pkgName: $pkgName, pkgBase: $pkgBase"
