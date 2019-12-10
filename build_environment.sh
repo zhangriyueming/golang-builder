@@ -55,7 +55,7 @@ pkgPath="$goPath/src/$pkgBase"
 mkdir -p "$(dirname "$pkgPath")"
 
 # Link source dir into GOPATH
-rm "$pkgPath"
+rm "$pkgPath" ||:
 ln -sf /src "$pkgPath"
 
 cd "$pkgPath/$MAIN_PATH"
